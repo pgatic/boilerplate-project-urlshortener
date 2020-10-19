@@ -4,6 +4,9 @@ var express = require('express');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 var cors = require('cors');
 
 var app = express();
@@ -11,8 +14,14 @@ var app = express();
 // Basic Configuration 
 var port = process.env.PORT || 3000;
 
-/** this project needs a db !! **/ 
-// mongoose.connect(process.env.DB_URI);
+/** this project needs a db !! **/
+mongoose.connect(process.env.DB_URI, function (err) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('connected');
+  }
+});
 
 app.use(cors());
 
@@ -21,15 +30,17 @@ app.use(cors());
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
-app.get('/', function(req, res){
+app.get('/', function (req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-  
+
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+  res.json({ greeting: 'hello API' });
 });
+
+// Post /api/shorturl/new enpoint
 
 
 app.listen(port, function () {
